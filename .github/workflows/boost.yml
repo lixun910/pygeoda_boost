@@ -25,30 +25,50 @@ jobs:
         Start-Process -FilePath "$env:GITHUB_WORKSPACE\boost_installer.exe" -ArgumentList "/VERYSILENT", "/DIR=C:\boost_temp" -Wait
       shell: pwsh
 
+    - name: Download Boost bin msvc all files
+      run: |
+        $url = "https://boost.teeks99.com/bin/1.86.0/boost_1_86_0-bin-msvc-all-32-64.7z"
+        $output = "$env:GITHUB_WORKSPACE\boost_1_86_0-bin-msvc-all-32-64.7z"
+        Invoke-WebRequest -Uri $url -OutFile $output
+
+        # Unzip using 7z
+        $7zPath = "C:\Program Files\7-Zip\7z.exe"
+        if (-Not (Test-Path $7zPath)) {
+          Write-Error "7-Zip is not installed on the runner."
+          exit 1
+        }
+        & $7zPath x $output -oC:\boost_temp -y
+      shell: pwsh
+
     - name: List Boost Files
       run: |
         ls -l C:\boost_temp
+        ls -l c:\boost_temp\lib64-msvc-14.3
       shell: pwsh
 
-    # - name: Copy Boost Headers
-    #   run: |
-    #     Copy-Item -Path "C:\boost_temp\include\boost-1_86\boost" -Destination "$env:GITHUB_WORKSPACE\include\boost" -Recurse -Force
-    #   shell: pwsh
+    - name: Copy Boost Headers
+      run: |
+        if (Test-Path "$env:GITHUB_WORKSPACE\include\boost\boost") {
+          Remove-Item -Path "$env:GITHUB_WORKSPACE\include\boost\boost" -Recurse -Force
+        }
+        Copy-Item -Path "C:\boost_temp\boost" -Destination "$env:GITHUB_WORKSPACE\include" -Recurse -Force
+      shell: pwsh
 
-    # - name: Copy Boost Libraries
-    #   run: |
-    #     New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\lib\win32"
-    #     New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\lib\win64"
-    #     Copy-Item -Path "C:\boost_temp\lib\*.lib" -Destination "$env:GITHUB_WORKSPACE\lib\win64" -Force
-    #     # Note: This installer doesn't include 32-bit libraries. If needed, download the 32-bit version separately.
-    #   shell: pwsh
+    - name: Copy Boost Libraries
+      run: |
+        Copy-Item -Path "C:\boost_temp\lib64-msvc-14.3\libboost_chrono-vc143-mt-x64-1_86.lib" -Destination "$env:GITHUB_WORKSPACE\lib\win64" -Force
+        Copy-Item -Path "C:\boost_temp\lib64-msvc-14.3\libboost_date_time-vc143-mt-x64-1_86.lib" -Destination "$env:GITHUB_WORKSPACE\lib\win64" -Force
+        Copy-Item -Path "C:\boost_temp\lib64-msvc-14.3\libboost_system-vc143-mt-x64-1_86.lib" -Destination "$env:GITHUB_WORKSPACE\lib\win64" -Force
+        Copy-Item -Path "C:\boost_temp\lib64-msvc-14.3\libboost_thread-vc143-mt-x64-1_86.lib" -Destination "$env:GITHUB_WORKSPACE\lib\win64" -Force
+        # Note: This installer doesn't include 32-bit libraries. If needed, download the 32-bit version separately.
+      shell: pwsh
 
-    # - name: Commit and Push Changes
-    #   run: |
-    #     git config --local user.email "action@github.com"
-    #     git config --local user.name "GitHub Action"
-    #     git add include/boost lib/win32 lib/win64
-    #     git commit -m "Update Boost libraries and headers" -a || echo "No changes to commit"
-    #     git push
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Commit and Push Changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add include/boost lib/win32 lib/win64
+        git commit -m "Update Boost libraries and headers" -a || echo "No changes to commit"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
