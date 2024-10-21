@@ -30,6 +30,11 @@ jobs:
         ls -l C:\boost_temp
       shell: pwsh
 
+    - name: Display Boost Directory Structure
+      run: |
+        tree C:\boost_temp /F
+      shell: pwsh
+
     # - name: Copy Boost Headers
     #   run: |
     #     Copy-Item -Path "C:\boost_temp\include\boost-1_86\boost" -Destination "$env:GITHUB_WORKSPACE\include\boost" -Recurse -Force
