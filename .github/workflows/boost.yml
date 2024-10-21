@@ -48,7 +48,10 @@ jobs:
 
     - name: Copy Boost Headers
       run: |
-        Copy-Item -Path "C:\boost_temp\boost" -Destination "$env:GITHUB_WORKSPACE\include\boost" -Recurse -Force
+        if (Test-Path "$env:GITHUB_WORKSPACE\include\boost\boost") {
+          Remove-Item -Path "$env:GITHUB_WORKSPACE\include\boost\boost" -Recurse -Force
+        }
+        Copy-Item -Path "C:\boost_temp\boost" -Destination "$env:GITHUB_WORKSPACE\include" -Recurse -Force
       shell: pwsh
 
     - name: Copy Boost Libraries
