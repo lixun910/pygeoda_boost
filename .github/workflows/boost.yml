@@ -43,7 +43,7 @@ jobs:
     - name: List Boost Files
       run: |
         ls -l C:\boost_temp
-        ls -l c:\boost_temp\lib
+        ls -l c:\boost_temp\lib64-msvc-14.3
       shell: pwsh
     # - name: Copy Boost Headers
     #   run: |
