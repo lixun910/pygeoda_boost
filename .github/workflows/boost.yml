@@ -1,0 +1,53 @@
+name: Download and Install Boost
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  download-and-install-boost:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Download Boost
+      run: |
+        $url = "https://boost.teeks99.com/bin/1.86.0/boost_1_86_0-msvc-14.3-64.exe"
+        $output = "$env:GITHUB_WORKSPACE\boost_installer.exe"
+        Invoke-WebRequest -Uri $url -OutFile $output
+      shell: pwsh
+
+    - name: Extract Boost
+      run: |
+        Start-Process -FilePath "$env:GITHUB_WORKSPACE\boost_installer.exe" -ArgumentList "/VERYSILENT", "/DIR=C:\boost_temp" -Wait
+      shell: pwsh
+
+    - name: List Boost Files
+      run: |
+        ls -l C:\boost_temp
+      shell: pwsh
+
+    # - name: Copy Boost Headers
+    #   run: |
+    #     Copy-Item -Path "C:\boost_temp\include\boost-1_86\boost" -Destination "$env:GITHUB_WORKSPACE\include\boost" -Recurse -Force
+    #   shell: pwsh
+
+    # - name: Copy Boost Libraries
+    #   run: |
+    #     New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\lib\win32"
+    #     New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\lib\win64"
+    #     Copy-Item -Path "C:\boost_temp\lib\*.lib" -Destination "$env:GITHUB_WORKSPACE\lib\win64" -Force
+    #     # Note: This installer doesn't include 32-bit libraries. If needed, download the 32-bit version separately.
+    #   shell: pwsh
+
+    # - name: Commit and Push Changes
+    #   run: |
+    #     git config --local user.email "action@github.com"
+    #     git config --local user.name "GitHub Action"
+    #     git add include/boost lib/win32 lib/win64
+    #     git commit -m "Update Boost libraries and headers" -a || echo "No changes to commit"
+    #     git push
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
