@@ -45,25 +45,25 @@ jobs:
         ls -l C:\boost_temp
         ls -l c:\boost_temp\lib64-msvc-14.3
       shell: pwsh
-    # - name: Copy Boost Headers
-    #   run: |
-    #     Copy-Item -Path "C:\boost_temp\include\boost-1_86\boost" -Destination "$env:GITHUB_WORKSPACE\include\boost" -Recurse -Force
-    #   shell: pwsh
 
-    # - name: Copy Boost Libraries
-    #   run: |
-    #     New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\lib\win32"
-    #     New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\lib\win64"
-    #     Copy-Item -Path "C:\boost_temp\lib\*.lib" -Destination "$env:GITHUB_WORKSPACE\lib\win64" -Force
-    #     # Note: This installer doesn't include 32-bit libraries. If needed, download the 32-bit version separately.
-    #   shell: pwsh
+    - name: Copy Boost Headers
+      run: |
+        Copy-Item -Path "C:\boost_temp\boost" -Destination "$env:GITHUB_WORKSPACE\include\boost" -Recurse -Force
+      shell: pwsh
 
-    # - name: Commit and Push Changes
-    #   run: |
-    #     git config --local user.email "action@github.com"
-    #     git config --local user.name "GitHub Action"
-    #     git add include/boost lib/win32 lib/win64
-    #     git commit -m "Update Boost libraries and headers" -a || echo "No changes to commit"
-    #     git push
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Copy Boost Libraries
+      run: |
+        New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\lib\win64"
+        Copy-Item -Path "C:\boost_temp\lib64-msvc-14.3\*-x86-1_86.lib" -Destination "$env:GITHUB_WORKSPACE\lib\win64" -Force
+        # Note: This installer doesn't include 32-bit libraries. If needed, download the 32-bit version separately.
+      shell: pwsh
+
+    - name: Commit and Push Changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add include/boost lib/win32 lib/win64
+        git commit -m "Update Boost libraries and headers" -a || echo "No changes to commit"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
