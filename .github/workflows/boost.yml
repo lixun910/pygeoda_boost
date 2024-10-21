@@ -25,16 +25,26 @@ jobs:
         Start-Process -FilePath "$env:GITHUB_WORKSPACE\boost_installer.exe" -ArgumentList "/VERYSILENT", "/DIR=C:\boost_temp" -Wait
       shell: pwsh
 
+    - name: Download Boost bin msvc all files
+      run: |
+        $url = "https://boost.teeks99.com/bin/1.86.0/boost_1_86_0-bin-msvc-all-32-64.7z"
+        $output = "$env:GITHUB_WORKSPACE\boost_1_86_0-bin-msvc-all-32-64.7z"
+        Invoke-WebRequest -Uri $url -OutFile $output
+
+        # Unzip using 7z
+        $7zPath = "C:\Program Files\7-Zip\7z.exe"
+        if (-Not (Test-Path $7zPath)) {
+          Write-Error "7-Zip is not installed on the runner."
+          exit 1
+        }
+        & $7zPath x $output -oC:\boost_temp -y
+      shell: pwsh
+
     - name: List Boost Files
       run: |
         ls -l C:\boost_temp
+        ls -l c:\boost_temp\lib
       shell: pwsh
-
-    - name: Display Boost Directory Structure
-      run: |
-        tree C:\boost_temp /F
-      shell: pwsh
-
     # - name: Copy Boost Headers
     #   run: |
     #     Copy-Item -Path "C:\boost_temp\include\boost-1_86\boost" -Destination "$env:GITHUB_WORKSPACE\include\boost" -Recurse -Force
