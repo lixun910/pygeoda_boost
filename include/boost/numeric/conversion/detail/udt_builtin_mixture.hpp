@@ -20,10 +20,10 @@
 namespace boost { namespace numeric { namespace convdetail
 {
   // Integral Constants for 'UdtMixture'
-  typedef mpl::integral_c<udt_builtin_mixture_enum, builtin_to_builtin> builtin2builtin_c ;
-  typedef mpl::integral_c<udt_builtin_mixture_enum, builtin_to_udt>     builtin2udt_c ;
-  typedef mpl::integral_c<udt_builtin_mixture_enum, udt_to_builtin>     udt2builtin_c ;
-  typedef mpl::integral_c<udt_builtin_mixture_enum, udt_to_udt>         udt2udt_c ;
+  typedef mpl::integral_c<int, static_cast<int>(builtin_to_builtin)> builtin2builtin_c ;
+  typedef mpl::integral_c<int, static_cast<int>(builtin_to_udt)>     builtin2udt_c ;
+  typedef mpl::integral_c<int, static_cast<int>(udt_to_builtin)>     udt2builtin_c ;
+  typedef mpl::integral_c<int, static_cast<int>(udt_to_udt)>         udt2udt_c ;
 
   // Metafunction:
   //

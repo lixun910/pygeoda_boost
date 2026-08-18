@@ -21,10 +21,10 @@
 namespace boost { namespace numeric { namespace convdetail
 {
   // Integral Constants for 'IntFloatMixture'
-  typedef mpl::integral_c<int_float_mixture_enum, integral_to_integral> int2int_c ;
-  typedef mpl::integral_c<int_float_mixture_enum, integral_to_float>    int2float_c ;
-  typedef mpl::integral_c<int_float_mixture_enum, float_to_integral>    float2int_c ;
-  typedef mpl::integral_c<int_float_mixture_enum, float_to_float>       float2float_c ;
+  typedef mpl::integral_c<int, static_cast<int>(integral_to_integral)> int2int_c ;
+  typedef mpl::integral_c<int, static_cast<int>(integral_to_float)>    int2float_c ;
+  typedef mpl::integral_c<int, static_cast<int>(float_to_integral)>    float2int_c ;
+  typedef mpl::integral_c<int, static_cast<int>(float_to_float)>       float2float_c ;
 
   // Metafunction:
   //
