@@ -21,10 +21,10 @@
 namespace boost { namespace numeric { namespace convdetail
 {
   // Integral Constants for 'SignMixture'
-  typedef mpl::integral_c<sign_mixture_enum, unsigned_to_unsigned> unsig2unsig_c ;
-  typedef mpl::integral_c<sign_mixture_enum, signed_to_signed>     sig2sig_c ;
-  typedef mpl::integral_c<sign_mixture_enum, signed_to_unsigned>   sig2unsig_c ;
-  typedef mpl::integral_c<sign_mixture_enum, unsigned_to_signed>   unsig2sig_c ;
+  typedef mpl::integral_c<int, static_cast<int>(unsigned_to_unsigned)> unsig2unsig_c ;
+  typedef mpl::integral_c<int, static_cast<int>(signed_to_signed)>     sig2sig_c ;
+  typedef mpl::integral_c<int, static_cast<int>(signed_to_unsigned)>   sig2unsig_c ;
+  typedef mpl::integral_c<int, static_cast<int>(unsigned_to_signed)>   unsig2sig_c ;
 
   // Metafunction:
   //
